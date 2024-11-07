@@ -8,7 +8,6 @@ import {
   faHome, 
   faBox, 
   faList, 
-  faUsers, 
   faChartLine, 
   faTruck 
 } from '@fortawesome/free-solid-svg-icons'
@@ -21,11 +20,11 @@ const menuItems = [
   { href: '/transactions', icon: faChartLine, label: 'Transações' },
 ]
 
-export default function Sidebar({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
+export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className={`${open ? 'block' : 'hidden'} lg:block h-screen min-h-full`}>
+    <aside className={`lg:block h-screen min-h-full`}>
       <div className="flex h-full w-64 flex-col bg-[#1E2023] p-4">
         <div className="flex items-center gap-2 mb-8">
           <Image src="/logo.png" alt="GOATECH Logo" width={40} height={40} />
