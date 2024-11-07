@@ -1,19 +1,13 @@
 'use client'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faBell, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faSearch } from '@fortawesome/free-solid-svg-icons'
 
-export default function Header({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; setSidebarOpen: (open: boolean) => void }) {
+export default function Header() {
   return (
     <header className="bg-[#1E2023] border-b border-gray-700 py-4 px-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-gray-400 hover:text-white focus:outline-none focus:text-white lg:hidden"
-          >
-            <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
-          </button>
           <div className="relative ml-4">
             <input
               type="text"

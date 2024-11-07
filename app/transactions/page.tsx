@@ -6,6 +6,15 @@ import Table from '../components/Table'
 import Modal from '../components/Modal'
 import { Plus } from 'lucide-react'
 
+interface Transaction {
+  id: number
+  data: string
+  tipo: string
+  produto: string
+  quantidade: number
+  valor: string
+}
+
 const columns = [
   { key: 'data', label: 'Data' },
   { key: 'tipo', label: 'Tipo' },
@@ -21,20 +30,20 @@ const initialData = [
 ]
 
 export default function Transacoes() {
-  const [data, setData] = useState(initialData)
+  const [data, setData] = useState<Transaction[]>(initialData)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentItem, setCurrentItem] = useState(null)
+  const [currentItem, setCurrentItem] = useState<Transaction | null>(null)
 
-  const handleEdit = (item) => {
+  const handleEdit = (item: Transaction) => {
     setCurrentItem(item)
     setIsModalOpen(true)
   }
 
-  const handleDelete = (item) => {
+  const handleDelete = (item: Transaction) => {
     setData(data.filter((i) => i.id !== item.id))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Lógica para adicionar ou editar item
     setIsModalOpen(false)

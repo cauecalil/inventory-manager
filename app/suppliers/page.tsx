@@ -6,6 +6,14 @@ import Table from '../components/Table'
 import Modal from '../components/Modal'
 import { Plus } from 'lucide-react'
 
+interface Fornecedor {
+  id: number;
+  nome: string;
+  contato: string;
+  telefone: string;
+  email: string;
+}
+
 const columns = [
   { key: 'nome', label: 'Nome' },
   { key: 'contato', label: 'Contato' },
@@ -22,18 +30,18 @@ const initialData = [
 export default function Fornecedores() {
   const [data, setData] = useState(initialData)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentItem, setCurrentItem] = useState(null)
+  const [currentItem, setCurrentItem] = useState<Fornecedor | null>(null)
 
-  const handleEdit = (item) => {
+  const handleEdit = (item: Fornecedor) => {
     setCurrentItem(item)
     setIsModalOpen(true)
   }
 
-  const handleDelete = (item) => {
+  const handleDelete = (item: Fornecedor) => {
     setData(data.filter((i) => i.id !== item.id))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Lógica para adicionar ou editar item
     setIsModalOpen(false)

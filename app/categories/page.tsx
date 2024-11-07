@@ -6,6 +6,12 @@ import Table from '../components/Table'
 import Modal from '../components/Modal'
 import { Plus } from 'lucide-react'
 
+interface Category {
+  id: number;
+  nome: string;
+  descricao: string;
+}
+
 const columns = [
   { key: 'nome', label: 'Nome' },
   { key: 'descricao', label: 'Descrição' },
@@ -20,18 +26,18 @@ const initialData = [
 export default function Categorias() {
   const [data, setData] = useState(initialData)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentItem, setCurrentItem] = useState(null)
+  const [currentItem, setCurrentItem] = useState<Category | null>(null)
 
-  const handleEdit = (item) => {
+  const handleEdit = (item: Category) => {
     setCurrentItem(item)
     setIsModalOpen(true)
   }
 
-  const handleDelete = (item) => {
+  const handleDelete = (item: Category) => {
     setData(data.filter((i) => i.id !== item.id))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Lógica para adicionar ou editar item
     setIsModalOpen(false)

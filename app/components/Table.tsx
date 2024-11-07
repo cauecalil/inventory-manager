@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faChevronRight, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons'
 
-export default function Table({ columns, data, onEdit, onDelete }) {
+export default function Table({ columns, data, onEdit, onDelete }: { columns: { key: string; label: string }[]; data: any[]; onEdit: (item: any) => void; onDelete: (item: any) => void }) {
   return (
     <div className="bg-[#1E2023] rounded-xl overflow-hidden">
       <table className="w-full">
