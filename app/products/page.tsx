@@ -12,6 +12,8 @@ import ErrorDisplay from "../components/ErrorDisplay";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
+import { useConfirmDialog } from '../hooks/useConfirmDialog'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 interface Product {
   id: number;
@@ -105,6 +107,8 @@ export default function Products() {
     "/api/suppliers"
   );
   const { addNotification } = useNotifications();
+  const { isOpen, confirm, handleClose, handleConfirm } = useConfirmDialog()
+  const [itemToDelete, setItemToDelete] = useState<Product | null>(null)
 
   const categories = categoriesData || [];
   const suppliers = suppliersData?.data || [];
@@ -120,26 +124,30 @@ export default function Products() {
   };
 
   const handleDelete = async (item: Product) => {
-    if (!confirm("Tem certeza que deseja excluir este produto?")) return;
+    setItemToDelete(item)
+    const confirmed = await confirm()
+    
+    if (confirmed) {
+      try {
+        const response = await fetch(`/api/products/${item.id}`, {
+          method: 'DELETE'
+        })
 
-    try {
-      const response = await fetch(`/api/products/${item.id}`, {
-        method: "DELETE",
-      });
+        const data = await response.json()
 
-      const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Erro ao excluir produto')
+        }
 
-      if (!response.ok) {
-        throw new Error(data.error || "Erro ao excluir produto");
+        await refetch()
+        addNotification('success', 'Produto excluído com sucesso!')
+      } catch (error) {
+        addNotification('error', error instanceof Error ? error.message : 'Erro ao excluir produto')
+        console.error('Erro:', error)
       }
-
-      await refetch();
-      addNotification("success", "Produto excluído com sucesso!");
-    } catch (error) {
-      addNotification("error", error instanceof Error ? error.message : "Erro ao excluir produto");
-      console.error("Erro:", error);
     }
-  };
+    setItemToDelete(null)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -412,6 +420,14 @@ export default function Products() {
           </div>
         </form>
       </Modal>
+
+      <ConfirmDialog
+        isOpen={isOpen}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        title="Excluir produto"
+        message={`Você tem certeza que deseja excluir o produto "${itemToDelete?.name}"? Esta ação não poderá ser desfeita.`}
+      />
     </Layout>
   );
 }

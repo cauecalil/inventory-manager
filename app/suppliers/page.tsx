@@ -10,6 +10,8 @@ import { useApi } from "../hooks/useApi";
 import { z } from "zod";
 import ErrorDisplay from "../components/ErrorDisplay";
 import { useNotifications } from "../contexts/NotificationContext";
+import { useConfirmDialog } from '../hooks/useConfirmDialog'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 interface Supplier {
   id: number;
@@ -58,6 +60,8 @@ export default function Suppliers() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { addNotification } = useNotifications();
+  const { isOpen, confirm, handleClose, handleConfirm } = useConfirmDialog()
+  const [itemToDelete, setItemToDelete] = useState<Supplier | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,26 +123,30 @@ export default function Suppliers() {
   };
 
   const handleDelete = async (item: Supplier) => {
-    if (!confirm("Tem certeza que deseja excluir este fornecedor?")) return;
+    setItemToDelete(item)
+    const confirmed = await confirm()
+    
+    if (confirmed) {
+      try {
+        const response = await fetch(`/api/suppliers/${item.id}`, {
+          method: 'DELETE'
+        })
 
-    try {
-      const response = await fetch(`/api/suppliers/${item.id}`, {
-        method: "DELETE",
-      });
+        const data = await response.json()
 
-      const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Erro ao excluir fornecedor')
+        }
 
-      if (!response.ok) {
-        throw new Error(data.error || "Erro ao excluir fornecedor");
+        await refetch()
+        addNotification('success', 'Fornecedor excluído com sucesso!')
+      } catch (error) {
+        addNotification('error', error instanceof Error ? error.message : 'Erro ao excluir fornecedor')
+        console.error('Erro:', error)
       }
-
-      await refetch();
-      addNotification('success', 'Fornecedor excluído com sucesso!');
-    } catch (error) {
-      addNotification('error', error instanceof Error ? error.message : 'Erro ao excluir fornecedor');
-      console.error("Erro:", error);
     }
-  };
+    setItemToDelete(null)
+  }
 
   return (
     <Layout loading={loading}>
@@ -258,6 +266,14 @@ export default function Suppliers() {
           </div>
         </form>
       </Modal>
+
+      <ConfirmDialog
+        isOpen={isOpen}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        title="Excluir fornecedor"
+        message={`Você tem certeza que deseja excluir o fornecedor "${itemToDelete?.name}"? Esta ação não poderá ser desfeita.`}
+      />
     </Layout>
   );
 }

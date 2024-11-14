@@ -89,7 +89,6 @@ export async function DELETE(
       )
     }
 
-    // Verificar se existem transações vinculadas
     if (product.transactions.length > 0) {
       return NextResponse.json(
         { error: 'Não é possível excluir um produto que possui transações vinculadas' },
@@ -105,7 +104,6 @@ export async function DELETE(
   } catch (error) {
     console.error('Erro ao excluir produto:', error)
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // Log específico para erros conhecidos do Prisma
       console.error('Código de erro Prisma:', error.code)
     }
     return NextResponse.json(

@@ -10,6 +10,8 @@ import { useApi } from "../hooks/useApi";
 import { z } from "zod";
 import ErrorDisplay from "../components/ErrorDisplay";
 import { useNotifications } from '../contexts/NotificationContext'
+import { useConfirmDialog } from '../hooks/useConfirmDialog'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 interface Category {
   id: number;
@@ -48,6 +50,8 @@ export default function Categories() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { addNotification } = useNotifications()
+  const { isOpen, confirm, handleClose, handleConfirm } = useConfirmDialog()
+  const [itemToDelete, setItemToDelete] = useState<Category | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,24 +104,28 @@ export default function Categories() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Tem certeza que deseja excluir esta categoria?')) return
+  const handleDelete = async (item: Category) => {
+    setItemToDelete(item)
+    const confirmed = await confirm()
+    
+    if (confirmed) {
+      try {
+        const response = await fetch(`/api/categories/${item.id}`, {
+          method: 'DELETE'
+        })
 
-    try {
-      const response = await fetch(`/api/categories/${id}`, {
-        method: 'DELETE'
-      })
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(error.error || 'Erro ao excluir categoria')
+        }
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Erro ao excluir categoria')
+        await refetch()
+        addNotification('success', 'Categoria excluída com sucesso!')
+      } catch (error) {
+        addNotification('error', error instanceof Error ? error.message : 'Erro ao excluir categoria')
       }
-
-      await refetch()
-      addNotification('success', 'Categoria excluída com sucesso!')
-    } catch (error) {
-      addNotification('error', error instanceof Error ? error.message : 'Erro ao excluir categoria')
     }
+    setItemToDelete(null)
   }
 
   if (error) {
@@ -210,6 +218,14 @@ export default function Categories() {
           </div>
         </form>
       </Modal>
+
+      <ConfirmDialog
+        isOpen={isOpen}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        title="Excluir categoria"
+        message={`Você tem certeza que deseja excluir a categoria "${itemToDelete?.name}"? Esta ação não poderá ser desfeita.`}
+      />
     </Layout>
   );
 }
