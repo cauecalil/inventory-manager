@@ -36,7 +36,15 @@ const columns = [
   { 
     key: 'type', 
     label: 'Tipo',
-    format: (value: string) => value === 'IN' ? 'Entrada' : 'Saída'
+    format: (value: string) => (
+      <span className={`px-2 py-1 rounded-full text-xs ${
+        value === 'IN' 
+          ? 'bg-green-900/30 text-green-400'
+          : 'bg-red-900/30 text-red-400'
+      }`}>
+        {value === 'IN' ? 'Entrada' : 'Saída'}
+      </span>
+    )
   },
   { key: 'product.name', label: 'Produto' },
   { key: 'quantity', label: 'Quantidade' },
