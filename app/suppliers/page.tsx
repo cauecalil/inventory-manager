@@ -9,6 +9,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useApi } from "../hooks/useApi";
 import { z } from "zod";
 import ErrorDisplay from "../components/ErrorDisplay";
+import { useNotifications } from "../contexts/NotificationContext";
 
 interface Supplier {
   id: number;
@@ -56,6 +57,7 @@ export default function Suppliers() {
   const [currentItem, setCurrentItem] = useState<Supplier | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { addNotification } = useNotifications();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,11 +94,7 @@ export default function Suppliers() {
       setCurrentItem(null);
       setFormErrors({});
       await refetch();
-      alert(
-        currentItem
-          ? "Fornecedor atualizado com sucesso!"
-          : "Fornecedor criado com sucesso!"
-      );
+      addNotification('success', `Fornecedor ${currentItem ? 'atualizado' : 'criado'} com sucesso!`);
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errors: Record<string, string> = {};
@@ -107,9 +105,7 @@ export default function Suppliers() {
         });
         setFormErrors(errors);
       } else {
-        alert(
-          error instanceof Error ? error.message : "Erro ao salvar fornecedor"
-        );
+        addNotification('error', error instanceof Error ? error.message : 'Erro ao salvar fornecedor');
         console.error("Erro:", error);
       }
     } finally {
@@ -137,11 +133,9 @@ export default function Suppliers() {
       }
 
       await refetch();
-      alert("Fornecedor excluído com sucesso!");
+      addNotification('success', 'Fornecedor excluído com sucesso!');
     } catch (error) {
-      alert(
-        error instanceof Error ? error.message : "Erro ao excluir fornecedor"
-      );
+      addNotification('error', error instanceof Error ? error.message : 'Erro ao excluir fornecedor');
       console.error("Erro:", error);
     }
   };

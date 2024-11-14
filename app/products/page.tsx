@@ -5,6 +5,7 @@ import Layout from "../components/Layout";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
 import { useApi } from "../hooks/useApi";
+import { useNotifications } from "../contexts/NotificationContext";
 import { z } from "zod";
 import { formatMoney } from "../utils/formatters";
 import ErrorDisplay from "../components/ErrorDisplay";
@@ -103,6 +104,7 @@ export default function Products() {
   const { data: suppliersData } = useApi<{ data: Supplier[] }>(
     "/api/suppliers"
   );
+  const { addNotification } = useNotifications();
 
   const categories = categoriesData || [];
   const suppliers = suppliersData?.data || [];
@@ -132,9 +134,9 @@ export default function Products() {
       }
 
       await refetch();
-      alert("Produto excluído com sucesso!");
+      addNotification("success", "Produto excluído com sucesso!");
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Erro ao excluir produto");
+      addNotification("error", error instanceof Error ? error.message : "Erro ao excluir produto");
       console.error("Erro:", error);
     }
   };
@@ -206,12 +208,12 @@ export default function Products() {
       setCurrentItem(null);
       setFormErrors({});
       await refetch();
-      alert("Produto criado com sucesso!");
+      addNotification("success", "Produto criado com sucesso!");
     } catch (error) {
       console.error("Erro completo:", error);
       const message =
         error instanceof Error ? error.message : "Erro ao salvar produto";
-      alert(message);
+      addNotification("error", message);
     } finally {
       setIsSubmitting(false);
     }

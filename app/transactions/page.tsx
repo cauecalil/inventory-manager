@@ -10,6 +10,7 @@ import { useApi } from '../hooks/useApi'
 import { z } from 'zod'
 import { formatMoney } from '../utils/formatters'
 import ErrorDisplay from '../components/ErrorDisplay'
+import { useNotifications } from '../contexts/NotificationContext'
 
 interface Transaction {
   id: number
@@ -78,6 +79,7 @@ export default function Transactions() {
   const [quantity, setQuantity] = useState(1)
   const [value, setValue] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { addNotification } = useNotifications()
 
   useEffect(() => {
     if (selectedProduct && quantity) {
@@ -91,8 +93,8 @@ export default function Transactions() {
     }
   }, [selectedProduct, quantity])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     setFormErrors({})
     setIsSubmitting(true)
   
@@ -101,7 +103,7 @@ export default function Transactions() {
       return
     }
   
-    const formData = new FormData(e.target as HTMLFormElement)
+    const formData = new FormData(event.currentTarget)
     const type = formData.get('type') as 'IN' | 'OUT'
     
     if (type === 'OUT' && selectedProduct.quantity < quantity) {
@@ -141,7 +143,7 @@ export default function Transactions() {
       setQuantity(1)
       setValue(0)
       await refetch()
-      alert('Transação registrada com sucesso!')
+      addNotification('success', 'Transação registrada com sucesso!')
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errors: Record<string, string> = {}
@@ -152,7 +154,7 @@ export default function Transactions() {
         })
         setFormErrors(errors)
       } else {
-        alert(error instanceof Error ? error.message : 'Erro ao registrar transação')
+        addNotification('error', error instanceof Error ? error.message : 'Erro ao registrar transação')
         console.error('Erro completo:', error)
       }
     } finally {

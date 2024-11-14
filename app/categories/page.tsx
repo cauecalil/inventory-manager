@@ -9,6 +9,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useApi } from "../hooks/useApi";
 import { z } from "zod";
 import ErrorDisplay from "../components/ErrorDisplay";
+import { useNotifications } from '../contexts/NotificationContext'
 
 interface Category {
   id: number;
@@ -46,6 +47,7 @@ export default function Categories() {
   const [currentItem, setCurrentItem] = useState<Category | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { addNotification } = useNotifications()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,6 +82,7 @@ export default function Categories() {
       setCurrentItem(null);
       setFormErrors({});
       await refetch();
+      addNotification('success', `Categoria ${currentItem ? 'atualizada' : 'criada'} com sucesso!`)
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errors: Record<string, string> = {};
@@ -90,14 +93,32 @@ export default function Categories() {
         });
         setFormErrors(errors);
       } else {
-        alert(
-          error instanceof Error ? error.message : "Erro ao salvar categoria"
-        );
+        addNotification('error', error instanceof Error ? error.message : 'Erro ao salvar categoria')
       }
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Tem certeza que deseja excluir esta categoria?')) return
+
+    try {
+      const response = await fetch(`/api/categories/${id}`, {
+        method: 'DELETE'
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Erro ao excluir categoria')
+      }
+
+      await refetch()
+      addNotification('success', 'Categoria excluída com sucesso!')
+    } catch (error) {
+      addNotification('error', error instanceof Error ? error.message : 'Erro ao excluir categoria')
+    }
+  }
 
   if (error) {
     return (
@@ -131,32 +152,7 @@ export default function Categories() {
           setCurrentItem(item);
           setIsModalOpen(true);
         }}
-        onDelete={async (item) => {
-          if (!confirm("Tem certeza que deseja excluir esta categoria?"))
-            return;
-
-          try {
-            const response = await fetch(`/api/categories/${item.id}`, {
-              method: "DELETE",
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-              throw new Error(data.error || "Erro ao excluir categoria");
-            }
-
-            await refetch();
-            alert("Categoria excluída com sucesso!");
-          } catch (error) {
-            alert(
-              error instanceof Error
-                ? error.message
-                : "Erro ao excluir categoria"
-            );
-            console.error("Erro:", error);
-          }
-        }}
+        onDelete={handleDelete}
       />
 
       <Modal
