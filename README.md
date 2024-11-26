@@ -49,48 +49,62 @@ Este é um sistema de gerenciamento de estoque desenvolvido para pequenos negóc
 
 1. Clone o repositório:
 
-  git clone https://github.com/cauecalil/goatech.git
+```
+git clone https://github.com/cauecalil/goatech.git
+```
 
 2. Instale as dependências:
 
-  npm install
+```
+npm install
+```
 
 3. Configure as variáveis de ambiente:
 
-  cp .env.example .env
+```
+cp .env.example .env
+```
 
 4. Execute as migrações do banco de dados:
 
-  npx prisma migrate dev
+```
+npx prisma migrate dev
+```
 
 5. Popule o banco com dados iniciais:
 
-  npx prisma db seed
+```
+npx prisma db seed
+```
 
 6. Inicie o servidor de desenvolvimento:
 
-  npm run dev
+```
+npm run dev
+```
 
 ## 🔧 Configuração
 
 ### Variáveis de Ambiente
-  DATABASE_URL="postgresql://user:password@localhost:5432/goatech"
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/goatech"
+```
 
 ## 📚 Documentação
 
 ### Estrutura do Projeto
-
-  goatech/
-  ├── app/
-  │   ├── api/ # Endpoints da API
-  │   ├── components/ # Componentes React
-  │ ├── utils/ # Funções utilitárias
-  │ └── ... # Páginas da aplicação
-  ├── prisma/
-  │ ├── schema.prisma # Schema do banco de dados
-  │ └── seed.ts # Script de seed
-  └── public/ # Arquivos estáticos
-
+```
+src/
+├── app/
+│   ├── (dashboard)/  # Páginas protegidas do dashboard
+│   ├── api/          # Endpoints da API
+│   └── layout.tsx    # Layout principal
+├── components/       # Componentes React
+├── contexts/         # Contextos React
+├── hooks/            # Hooks personalizados
+├── lib/              # Utilitários e configurações
+└── types/            # Definições de tipos TypeScript
+```
 ## 🤝 Contribuição
 
 1. Faça um fork do projeto
