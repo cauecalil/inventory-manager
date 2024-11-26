@@ -1,6 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { NotificationProvider } from '@/contexts/NotificationContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,7 +19,9 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${inter.className} bg-background text-text-primary`}>
         <NotificationProvider>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </NotificationProvider>
       </body>
     </html>

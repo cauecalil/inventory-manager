@@ -1,14 +1,29 @@
 import { PrismaClient, Prisma } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
 async function main() {
   try {
     console.log('Cleaning existing data...')
+    await prisma.user.deleteMany()
     await prisma.transaction.deleteMany()
     await prisma.product.deleteMany()
     await prisma.category.deleteMany()
     await prisma.supplier.deleteMany()
+
+    const adminPassword = await bcrypt.hash('admin123', 10)
+    const admin = await prisma.user.upsert({
+      where: { email: 'admin@goatech.com' },
+      update: {},
+      create: {
+        name: 'Administrador',
+        email: 'admin@goatech.com',
+        password: adminPassword,
+      },
+    })
+  
+    console.log('Usuário admin criado:', admin)
 
     const categoriesData = [
       { name: 'Lanches', description: 'Diversos tipos de lanches' },

@@ -132,7 +132,7 @@ O projeto está em desenvolvimento ativo. Novas funcionalidades serão adicionad
 
 ## 🔮 Próximos Passos
 
-- [ ] Implementação de autenticação de usuários
+- [X] Implementação de autenticação de usuários
 - [ ] Sistema de notificações
 - [ ] Relatórios personalizados
 - [ ] Integração com sistemas de PDV
