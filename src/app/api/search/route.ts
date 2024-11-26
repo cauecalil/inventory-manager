@@ -5,9 +5,8 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const query = searchParams.get('q') || ''
-    const limit = parseInt(searchParams.get('limit') || '10')
 
-    const [produtos, categorias, fornecedores] = await Promise.all([
+    const [products, categories, suppliers] = await Promise.all([
       prisma.product.findMany({
         where: {
           OR: [
@@ -18,7 +17,7 @@ export async function GET(request: Request) {
         include: {
           category: true
         },
-        take: limit,
+        take: 5,
         orderBy: {
           name: 'asc'
         }
@@ -27,7 +26,7 @@ export async function GET(request: Request) {
         where: {
           name: { contains: query, mode: 'insensitive' }
         },
-        take: limit,
+        take: 5,
         orderBy: {
           name: 'asc'
         }
@@ -39,7 +38,7 @@ export async function GET(request: Request) {
             { email: { contains: query, mode: 'insensitive' } }
           ]
         },
-        take: limit,
+        take: 5,
         orderBy: {
           name: 'asc'
         }
@@ -47,28 +46,28 @@ export async function GET(request: Request) {
     ])
 
     const results = [
-      ...produtos.map(p => ({
+      ...products.map(p => ({
         id: p.id,
-        tipo: 'produto' as const,
-        titulo: p.name,
-        subtitulo: p.category.name,
-        link: `/products?id=${p.id}`
+        type: 'product' as const,
+        title: p.name,
+        subtitle: p.category.name,
+        link: `/products?action=edit&id=${p.id}`
       })),
       
-      ...categorias.map(c => ({
+      ...categories.map(c => ({
         id: c.id,
-        tipo: 'categoria' as const,
-        titulo: c.name,
-        subtitulo: c.description,
-        link: `/categories?id=${c.id}`
+        type: 'category' as const,
+        title: c.name,
+        subtitle: c.description,
+        link: `/categories?action=edit&id=${c.id}`
       })),
       
-      ...fornecedores.map(f => ({
+      ...suppliers.map(f => ({
         id: f.id,
-        tipo: 'fornecedor' as const,
-        titulo: f.name,
-        subtitulo: f.email,
-        link: `/suppliers?id=${f.id}`
+        type: 'supplier' as const,
+        title: f.name,
+        subtitle: f.email,
+        link: `/suppliers?action=edit&id=${f.id}`
       }))
     ]
 
