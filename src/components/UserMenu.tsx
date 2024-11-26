@@ -9,16 +9,53 @@ import {
   faChevronDown,
   faGear
 } from '@fortawesome/free-solid-svg-icons'
+import NotificationCenter from './NotificationCenter'
+
+const mockNotifications = [
+  {
+    id: '1',
+    title: 'Novo produto adicionado',
+    message: 'O produto "Notebook Dell" foi adicionado ao estoque',
+    type: 'success' as const,
+    timestamp: new Date(Date.now() - 1000 * 60 * 5),
+    read: false
+  },
+  {
+    id: '2',
+    title: 'Erro na transação',
+    message: 'Não foi possível processar a última transação',
+    type: 'error' as const,
+    timestamp: new Date(Date.now() - 1000 * 60 * 30),
+    read: false
+  },
+  {
+    id: '3',
+    title: 'Atualização do sistema',
+    message: 'Uma nova versão do sistema está disponível',
+    type: 'info' as const,
+    timestamp: new Date(Date.now() - 1000 * 60 * 60),
+    read: true
+  }
+]
 
 export default function UserMenu() {
   const [isOpen, setIsOpen] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifications, setNotifications] = useState(mockNotifications)
   const menuRef = useRef<HTMLDivElement>(null)
+  const notificationRef = useRef<HTMLDivElement>(null)
   const { data: session } = useSession()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (
+        menuRef.current && 
+        !menuRef.current.contains(event.target as Node) &&
+        notificationRef.current && 
+        !notificationRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false)
+        setShowNotifications(false)
       }
     }
 
@@ -30,15 +67,48 @@ export default function UserMenu() {
     await signOut({ callbackUrl: '/login' })
   }
 
+  const handleMarkAsRead = (id: string) => {
+    setNotifications(notifications.map(n => 
+      n.id === id ? { ...n, read: true } : n
+    ))
+  }
+
+  const handleClearAll = () => {
+    setNotifications([])
+  }
+
+  const unreadCount = notifications.filter(n => !n.read).length
   const userInitial = session?.user?.name?.charAt(0) || 'U'
 
   return (
     <div className="flex items-center gap-4" ref={menuRef}>
-      <button className="relative p-2 hover:bg-white/5 rounded-lg transition-colors">
-        <FontAwesomeIcon icon={faBell} className="text-gray-400 hover:text-white h-5 w-5" />
-        <span className="absolute top-1 right-1 w-2 h-2 bg-[#22c55e] rounded-full"></span>
-      </button>
+      {/* Notification Button */}
+      <div className="relative" ref={notificationRef}>
+        <button 
+          className="relative p-2 hover:bg-white/5 rounded-lg transition-colors"
+          onClick={() => setShowNotifications(!showNotifications)}
+        >
+          <FontAwesomeIcon 
+            icon={faBell} 
+            className="text-gray-400 hover:text-white h-5 w-5" 
+          />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#22c55e] text-white text-xs flex items-center justify-center rounded-full">
+              {unreadCount}
+            </span>
+          )}
+        </button>
+
+        <NotificationCenter
+          isOpen={showNotifications}
+          onClose={() => setShowNotifications(false)}
+          notifications={notifications}
+          onMarkAsRead={handleMarkAsRead}
+          onClearAll={handleClearAll}
+        />
+      </div>
       
+      {/* User Menu */}
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -65,8 +135,10 @@ export default function UserMenu() {
           />
         </button>
 
+        {/* Dropdown Menu */}
         {isOpen && (
           <div className="absolute right-0 mt-2 w-56 bg-[#1A1C1E] rounded-lg shadow-xl border border-gray-700/50 py-1 z-50">
+            {/* Mobile User Info */}
             <div className="md:hidden px-4 py-2 border-b border-gray-700/50">
               <div className="text-sm font-medium text-white">
                 {session?.user?.name || 'Usuário'}
