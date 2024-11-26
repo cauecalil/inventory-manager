@@ -1,16 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Layout from '../components/Layout'
-import Table from '../components/Table'
-import Modal from '../components/Modal'
+import Layout from '@/components/Layout'
+import Table from '@/components/Table'
+import Modal from '@/components/Modal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { useApi } from '../hooks/useApi'
+import { useApi } from '@/hooks/useApi'
 import { z } from 'zod'
-import { formatMoney } from '../utils/formatters'
-import ErrorDisplay from '../components/ErrorDisplay'
-import { useNotifications } from '../contexts/NotificationContext'
+import { formatMoney } from '@/lib/utils/formatters'
+import ErrorDisplay from '@/components/ErrorDisplay'
+import { useNotifications } from '@/contexts/NotificationContext'
 
 interface Transaction {
   id: number
@@ -26,6 +26,18 @@ interface Transaction {
       name: string
     }
   }
+}
+
+interface Product {
+  id: number;
+  name: string;
+  buyPrice: number;
+  sellPrice: number;
+  quantity: number;
+  category: {
+    id: number;
+    name: string;
+  };
 }
 
 const columns = [
@@ -72,10 +84,10 @@ const transactionSchema = z.object({
 
 export default function Transactions() {
   const { data: transactions, loading, error, refetch } = useApi<Transaction[]>('/api/transactions')
-  const { data: products } = useApi<any[]>('/api/products')
+  const { data: products } = useApi<Product[]>('/api/products')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [value, setValue] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)

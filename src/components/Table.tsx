@@ -4,15 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faChevronRight, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 
-interface Column {
-  key: string
-  label: string
-  format?: (value: any) => React.ReactNode
+interface Column<T> {
+  key: keyof T;
+  label: string;
+  format?: (value: T[keyof T]) => string | number;
 }
 
 interface TableProps<T> {
   data: T[]
-  columns: Column[]
+  columns: Column<T>[]
   loading?: boolean
   onEdit?: (item: T) => void
   onDelete?: (item: T) => void
@@ -22,8 +22,19 @@ interface TableProps<T> {
   }
 }
 
-const getNestedValue = (obj: any, path: string) => {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj)
+type NestedKeyOf<ObjectType extends object> = {
+  [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
+    ? `${Key}` | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
+    : `${Key}`
+}[keyof ObjectType & (string | number)];
+
+const getNestedValue = <T extends object>(obj: T, path: NestedKeyOf<T> | keyof T): unknown => {
+  return path.toString().split('.').reduce((acc: unknown, part: string) => {
+    if (acc && typeof acc === 'object') {
+      return (acc as Record<string, unknown>)[part];
+    }
+    return undefined;
+  }, obj);
 }
 
 const Pagination = ({ currentPage, totalPages, onPageChange }: {

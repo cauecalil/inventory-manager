@@ -2,7 +2,7 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle, faCircleXmark, faInfoCircle, faX } from '@fortawesome/free-solid-svg-icons'
-import { NotificationType } from '../contexts/NotificationContext'
+import { NotificationType } from '@/contexts/NotificationContext'
 
 interface Notification {
   id: string

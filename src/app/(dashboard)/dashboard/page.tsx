@@ -1,8 +1,8 @@
 'use client'
 
-import Layout from '../components/Layout'
-import { useApi } from '../hooks/useApi'
-import { formatMoney } from '../utils/formatters'
+import Layout from '@/components/Layout'
+import { useApi } from '@/hooks/useApi'
+import { formatMoney } from '@/lib/utils/formatters'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LabelList
@@ -15,7 +15,7 @@ import {
   faExclamationTriangle,
   faList
 } from '@fortawesome/free-solid-svg-icons'
-import ErrorDisplay from '../components/ErrorDisplay'
+import ErrorDisplay from '@/components/ErrorDisplay'
 import Image from 'next/image'
 
 const COLORS = ['#22c55e', '#3b82f6', '#ef4444', '#f59e0b']

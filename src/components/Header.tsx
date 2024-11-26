@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, useRef } from 'react'
 import SearchResults from './SearchResults'
-import { useDebounce } from '../hooks/useDebounce'
+import { useDebounce } from '@/hooks/useDebounce'
 
 export default function Header() {
   const [searchTerm, setSearchTerm] = useState('')

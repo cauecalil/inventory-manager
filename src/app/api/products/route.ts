@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
-import { calculateProductStock } from '@/lib/stock'
+import { calculateProductStock } from '@/lib/utils/stock'
 
 const productSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),

@@ -189,7 +189,7 @@ export async function GET() {
       WHERE t.type = 'OUT' AND t.date >= ${thirtyDaysAgo}
     `
 
-    const formatNumber = (value: any) => {
+    const formatNumber = (value: number | bigint | Prisma.Decimal | null | undefined) => {
       if (value === null || value === undefined) return 0;
       if (typeof value === 'bigint') return Number(value);
       if (value instanceof Prisma.Decimal) return Number(value.toFixed(2));

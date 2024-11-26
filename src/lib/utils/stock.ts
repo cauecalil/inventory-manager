@@ -1,4 +1,4 @@
-import { prisma } from './prisma'
+import { prisma } from '@/lib/prisma'
 
 export async function calculateProductStock(productId: number): Promise<number> {
   const transactions = await prisma.transaction.groupBy({

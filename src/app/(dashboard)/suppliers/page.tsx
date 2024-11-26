@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import Layout from "../components/Layout";
-import Table from "../components/Table";
-import Modal from "../components/Modal";
+import Layout from "@/components/Layout";
+import Table from "@/components/Table";
+import Modal from "@/components/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { useApi } from "../hooks/useApi";
+import { useApi } from "@/hooks/useApi";
 import { z } from "zod";
-import ErrorDisplay from "../components/ErrorDisplay";
-import { useNotifications } from "../contexts/NotificationContext";
-import { useConfirmDialog } from '../hooks/useConfirmDialog'
-import ConfirmDialog from '../components/ConfirmDialog'
+import ErrorDisplay from "@/components/ErrorDisplay";
+import { useNotifications } from "@/contexts/NotificationContext";
+import { useConfirmDialog } from '@/hooks/useConfirmDialog'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 interface Supplier {
   id: number;
@@ -25,6 +25,11 @@ interface Supplier {
   }[];
 }
 
+interface Product {
+  id: number;
+  name: string;
+}
+
 const columns = [
   { key: "name", label: "Nome" },
   { key: "contact", label: "Contato" },
@@ -33,7 +38,7 @@ const columns = [
   {
     key: "products",
     label: "Products",
-    format: (products: any[]) => products.length,
+    format: (products: Product[]) => products.length,
   },
 ];
 

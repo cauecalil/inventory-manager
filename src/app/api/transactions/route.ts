@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
-import { hasEnoughStock } from '@/lib/stock'
+import { hasEnoughStock } from '@/lib/utils/stock'
 
 const transactionSchema = z.object({
   type: z.enum(['IN', 'OUT']),

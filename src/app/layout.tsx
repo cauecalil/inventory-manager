@@ -1,6 +1,6 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
-import { NotificationProvider } from './contexts/NotificationContext'
+import { NotificationProvider } from '@/contexts/NotificationContext'
 
 const inter = Inter({ subsets: ['latin'] })
 

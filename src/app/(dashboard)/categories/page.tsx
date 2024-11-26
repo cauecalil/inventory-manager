@@ -1,26 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import Layout from "../components/Layout";
-import Table from "../components/Table";
-import Modal from "../components/Modal";
+import Layout from "@/components/Layout";
+import Table from "@/components/Table";
+import Modal from "@/components/Modal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { useApi } from "../hooks/useApi";
+import { useApi } from "@/hooks/useApi";
 import { z } from "zod";
-import ErrorDisplay from "../components/ErrorDisplay";
-import { useNotifications } from '../contexts/NotificationContext'
-import { useConfirmDialog } from '../hooks/useConfirmDialog'
-import ConfirmDialog from '../components/ConfirmDialog'
+import ErrorDisplay from "@/components/ErrorDisplay";
+import { useNotifications } from '@/contexts/NotificationContext'
+import { useConfirmDialog } from '@/hooks/useConfirmDialog'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 interface Category {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
   products: {
     id: number;
     name: string;
   }[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const columns = [
@@ -29,7 +31,7 @@ const columns = [
   {
     key: "products",
     label: "Produtos",
-    format: (products: any[]) => products.length,
+    format: (products: Category['products']) => products.length,
   },
 ];
 

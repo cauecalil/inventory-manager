@@ -1,19 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import Layout from "../components/Layout";
-import Table from "../components/Table";
-import Modal from "../components/Modal";
-import { useApi } from "../hooks/useApi";
-import { useNotifications } from "../contexts/NotificationContext";
+import Layout from "@/components/Layout";
+import Table from "@/components/Table";
+import Modal from "@/components/Modal";
+import { useApi } from "@/hooks/useApi";
+import { useNotifications } from "@/contexts/NotificationContext";
 import { z } from "zod";
-import { formatMoney } from "../utils/formatters";
-import ErrorDisplay from "../components/ErrorDisplay";
+import { formatMoney } from "@/lib/utils/formatters";
+import ErrorDisplay from "@/components/ErrorDisplay";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
-import { useConfirmDialog } from '../hooks/useConfirmDialog'
-import ConfirmDialog from '../components/ConfirmDialog'
+import { useConfirmDialog } from '@/hooks/useConfirmDialog'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 interface Product {
   id: number;
@@ -41,6 +41,11 @@ interface Supplier {
 interface Category {
   id: number;
   name: string;
+}
+
+interface ApiError {
+  path: string[];
+  message: string;
 }
 
 const columns = [
@@ -195,7 +200,7 @@ export default function Products() {
         if (errorData.error) {
           if (Array.isArray(errorData.error)) {
             const errors: Record<string, string> = {};
-            errorData.error.forEach((err: any) => {
+            errorData.error.forEach((err: ApiError) => {
               if (err.path) {
                 errors[err.path[0]] = err.message;
               }

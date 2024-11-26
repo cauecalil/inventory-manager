@@ -1,5 +1,5 @@
 {
-  "name": "goatech",
+  "name": "inventory-manager",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,9 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@prisma/client": "^5.22.0",
+    "bcryptjs": "^2.4.3",
     "next": "15.0.2",
+    "next-auth": "^4.24.10",
     "prisma": "^5.22.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -22,6 +24,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.17.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
