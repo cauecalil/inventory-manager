@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useSession } from 'next-auth/react'
 
 export function useApi<T>(url: string, options?: RequestInit) {
+  const { data: session } = useSession()
   const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -11,9 +13,19 @@ export function useApi<T>(url: string, options?: RequestInit) {
     try {
       setLoading(true)
       const finalUrl = page ? `${url}?page=${page}` : url
-      const response = await fetch(finalUrl, options)
+      
+      const response = await fetch(finalUrl, {
+        ...options,
+        headers: {
+          ...options?.headers,
+          'Content-Type': 'application/json',
+        }
+      })
       
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
         const errorData = await response.json()
         throw new Error(errorData.error || 'Erro ao carregar dados')
       }
@@ -29,8 +41,10 @@ export function useApi<T>(url: string, options?: RequestInit) {
   }, [url, options])
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    if (session) {
+      fetchData()
+    }
+  }, [fetchData, session])
 
   return { data, loading, error, refetch: fetchData }
 } 
