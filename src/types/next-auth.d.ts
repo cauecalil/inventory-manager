@@ -6,11 +6,16 @@ declare module 'next-auth' {
     user: {
       id: string
     } & DefaultSession['user']
+    expiresAt?: number
   }
 
   interface User {
     id: string
     name: string
     email: string
+  }
+
+  interface JWT {
+    expiresAt?: number
   }
 } 

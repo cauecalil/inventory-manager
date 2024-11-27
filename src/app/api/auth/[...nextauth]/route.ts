@@ -44,10 +44,23 @@ const handler = NextAuth({
     })
   ],
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
+    maxAge: 6 * 60 * 60,
   },
   pages: {
     signIn: '/login'
+  },
+  callbacks: {
+    async jwt({ token, trigger, session }) {
+      if (trigger === "signIn") {
+        token.expiresAt = Date.now() + (6 * 60 * 60 * 1000)
+      }
+      return token
+    },
+    async session({ session, token }) {
+      session.expiresAt = token.expiresAt as number
+      return session
+    }
   }
 })
 

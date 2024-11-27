@@ -2,6 +2,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { AuthProvider } from '@/contexts/AuthContext'
+import SessionTimer from '@/components/SessionTimer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,6 +22,7 @@ export default function RootLayout({
         <NotificationProvider>
           <AuthProvider>
             {children}
+            <SessionTimer />
           </AuthProvider>
         </NotificationProvider>
       </body>
