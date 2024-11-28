@@ -186,16 +186,17 @@ export default function Table<T>({
                   >
                     {column.format
                       ? column.format(getNestedValue(item, column.key))
-                      : getNestedValue(item, column.key)}
+                      : String(getNestedValue(item, column.key) ?? '')}
                   </td>
                 ))}
                 {(onEdit || onDelete) && (
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex justify-end gap-2">
                       {onEdit && (
                         <button
                           onClick={() => onEdit(item)}
-                          className="text-blue-400 hover:text-blue-300 transition-colors"
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-[#22c55e] hover:bg-[#22c55e]/10 transition-all"
+                          title="Editar"
                         >
                           <FontAwesomeIcon icon={faPencil} className="h-4 w-4" />
                         </button>
@@ -203,7 +204,8 @@ export default function Table<T>({
                       {onDelete && (
                         <button
                           onClick={() => onDelete(item)}
-                          className="text-red-400 hover:text-red-300 transition-colors"
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                          title="Excluir"
                         >
                           <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
                         </button>
