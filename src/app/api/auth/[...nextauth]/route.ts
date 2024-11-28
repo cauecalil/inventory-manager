@@ -51,7 +51,7 @@ const handler = NextAuth({
     signIn: '/login'
   },
   callbacks: {
-    async jwt({ token, trigger, session }) {
+    async jwt({ token, trigger }) {
       if (trigger === "signIn") {
         token.expiresAt = Date.now() + (6 * 60 * 60 * 1000)
       }
