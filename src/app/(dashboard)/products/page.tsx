@@ -66,7 +66,13 @@ const columns = [
     ),
   },
   { key: "name", label: "Nome" },
-  { key: "description", label: "Descrição" },
+  { 
+    key: "description", 
+    label: "Descrição",
+    format: (value: string) => value ? (
+      value.length > 50 ? `${value.substring(0, 50)}...` : value
+    ) : '-'
+  },
   {
     key: "buyPrice",
     label: "Preço de Compra",
