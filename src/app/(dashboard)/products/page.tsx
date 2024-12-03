@@ -70,7 +70,7 @@ const columns = [
     key: "description", 
     label: "Descrição",
     format: (value: string) => value ? (
-      value.length > 50 ? `${value.substring(0, 50)}...` : value
+      value.length > 30 ? `${value.substring(0, 30)}...` : value
     ) : '-'
   },
   {
